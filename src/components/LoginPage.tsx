@@ -1,83 +1,77 @@
-import React, {ChangeEvent, useEffect, useState} from 'react';
-import {contentProps} from "../interfaces/interfaces";
-import {getAccessToken, setAccessToken} from '../utils/token';
-import {FormGroup , TextField, Button} from "@mui/material";
-import {getLogin, setLogin} from "../utils/user";
-
+import { ChangeEvent, useState } from "react";
+import { setAccessToken } from "../utils/token";
+import { FormGroup, TextField, Button } from "@mui/material";
+import { setLogin } from "../utils/user";
 
 export default function Content() {
-
   const [userNameError, setUserNameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
 
-  const [userName, setUserName] = useState('');
-  const [password, setPassword] = useState('');
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [loginMessage, setLoginMessage] = useState('');
+  const [loginMessage, setLoginMessage] = useState("");
 
   const loginUser = (login: string, pasword: string) => {
-    console.log('submit')
-    setLoginMessage('');
-    fetch('http://127.0.0.1:4000/login', {
-      method: 'POST',
+    console.log("submit");
+    setLoginMessage("");
+    fetch("http://127.0.0.1:4000/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      redirect: 'follow',
-      mode: 'cors',
+      redirect: "follow",
+      mode: "cors",
       body: JSON.stringify({
         username: login,
-        password: pasword
-      })
+        password: pasword,
+      }),
     })
-      .then(res => res.json())
-      .then(resJson => {
+      .then((res) => res.json())
+      .then((resJson) => {
         console.log(resJson);
-        if(resJson.status === 1){
-          setAccessToken(resJson.token)
-          setLogin(login)
+        if (resJson.status === 1) {
+          setAccessToken(resJson.token);
+          setLogin(login);
           //props.setCurrentAction('main')
-          window.location.replace('/');
-        }
-        else {
+          window.location.replace("/");
+        } else {
           resJson.errCode
-            ?
-              setLoginMessage('Internal server error occurred')
-            :
-              setLoginMessage(resJson.response);
+            ? setLoginMessage("Internal server error occurred")
+            : setLoginMessage(resJson.response);
         }
-      })
-  }
+      });
+  };
 
   const updateInsertedUserName = (event: ChangeEvent<HTMLInputElement>) => {
     //setUserName();
-    setUserName(event.target.value)
-  }
+    setUserName(event.target.value);
+  };
 
   const updateInsertedPassword = (event: ChangeEvent<HTMLInputElement>) => {
     //setPassword(value);
-    setPassword(event.target.value)
-  }
+    setPassword(event.target.value);
+  };
 
   const validateInputData = () => {
-    console.log(userName + ' pswd ' + password);
-    if(!userName) setUserNameError(true);
+    console.log(userName + " pswd " + password);
+    if (!userName) setUserNameError(true);
     else setUserNameError(false);
-    if(!password) {
+    if (!password) {
       setPasswordError(true);
       return;
-    }
-    else setPasswordError(false);
+    } else setPasswordError(false);
 
     loginUser(userName, password);
-
-  }
+  };
 
   return (
-    <div style={{
-      marginTop: "10%"
-    }}>
-      <FormGroup sx={{maxWidth: "25%", marginInline: "auto"}}>
+    <div
+      style={{
+        marginTop: "10%",
+      }}
+    >
+      <FormGroup sx={{ maxWidth: "25%", marginInline: "auto" }}>
         <TextField
           required
           error={userNameError}
@@ -96,21 +90,22 @@ export default function Content() {
           margin="normal"
           onChange={updateInsertedPassword}
         />
-          <span style={{
-            color: 'red'
+        <span
+          style={{
+            color: "red",
           }}
-          >
-            {loginMessage}
-          </span>
+        >
+          {loginMessage}
+        </span>
         <Button
           variant="contained"
           color="primary"
-          sx={{ marginInline: "auto"}}
+          sx={{ marginInline: "auto" }}
           onClick={validateInputData}
         >
           Sign in
         </Button>
-      </FormGroup >
+      </FormGroup>
     </div>
   );
 }
