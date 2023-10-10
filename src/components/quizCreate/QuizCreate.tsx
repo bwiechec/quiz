@@ -6,120 +6,185 @@ import {
   InputLabel,
   Select,
   FormControl,
-  CircularProgress,
-  Fab, SelectChangeEvent
+  Fab,
+  SelectChangeEvent,
 } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
-import React, {ChangeEvent, FormEvent, FormEventHandler, useEffect, useState} from "react";
-import {categoryListInterface, quizAnswerInterface, quizQuestionInterface} from "../../interfaces/interfaces";
-import {getAccessToken} from "../../utils/token";
+import AddIcon from "@mui/icons-material/Add";
+import PageLoading from "../pageLoading/PageLoading";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  FormEventHandler,
+  useEffect,
+  useState,
+} from "react";
+import {
+  categoryListInterface,
+  quizAnswerInterface,
+  quizQuestionInterface,
+} from "../../interfaces/interfaces";
+import { getAccessToken } from "../../utils/token";
 import QuizAnswer from "./QuizAnswer";
 import QuizQuestion from "./QuizQuestion";
+import { useSelector } from "react-redux";
+import ContentCard from "../contentCard/ContentCard";
+import { json, useNavigate } from "react-router";
 
-export default function QuizCreate(){
+export default function QuizCreate() {
+  const categoryList = useSelector((state) => state.category.categoryList);
 
-  const [questionList, setQuestionList] = useState<Array<quizQuestionInterface>>();
-  const [categoryList, setCategoryList] = useState<Array<categoryListInterface>>([]);
-  const [categorySelected, setCategorySelected] = useState<number>();
+  const [questionList, setQuestionList] =
+    useState<Array<quizQuestionInterface>>();
+  const [categorySelected, setCategorySelected] = useState<string>(
+    categoryList[0].categoryId
+  );
+  const [titleSelected, setTitleSelected] = useState<string>();
+  const [descriptionSelected, setDescriptionSelected] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const navigate = useNavigate();
+
+  const getCurrentTimestamp = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hh = date.getHours();
+    const mm = date.getMinutes();
+    const ss = date.getSeconds();
+    return (
+      "" +
+      year +
+      "-" +
+      (month < 10 ? "0" + month : month) +
+      "-" +
+      (day < 10 ? "0" + day : day) +
+      " " +
+      (hh < 10 ? "0" + hh : hh) +
+      ":" +
+      (mm < 10 ? "0" + mm : mm) +
+      ":" +
+      (ss < 10 ? "0" + ss : ss)
+    );
+  };
 
   const getNewQuestion = () => {
     return {
-      quizId: null,
-      text: '',
-      quizAnswerList: [
+      quiz_id: null,
+      text: "",
+      answers: [
         {
-          text: '',
+          text: "",
           questionId: questionList?.length ?? 0,
-          isCorrect: true
+          is_correct: true,
         } as quizAnswerInterface,
         {
-          text: '',
+          text: "",
           questionId: questionList?.length ?? 0,
-          isCorrect: false
+          is_correct: false,
         } as quizAnswerInterface,
         {
-          text: '',
+          text: "",
           questionId: questionList?.length ?? 0,
-          isCorrect: false
-        } as quizAnswerInterface
-      ]
+          is_correct: false,
+        } as quizAnswerInterface,
+      ],
     } as quizQuestionInterface;
-  }
+  };
 
-  useEffect(() => {
-    fetch('http://127.0.0.1:4000/categoryList', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'authorization': `Bearer ${getAccessToken()}`
-      },
-      redirect: 'follow',
-      mode: 'cors'
-    })
-      .then(res => res.json())
-      .then(resJson => {
-        setCategoryList(resJson.response.quizCategoryList);
-        setCategorySelected(resJson.response.quizCategoryList[0].categoryId);
-        setIsLoading(false);
-        if(!questionList)
-          setQuestionList(questionList ? [...questionList, getNewQuestion()] : [getNewQuestion()]);
-        console.log(resJson);
-      });
-  }, [])
-
-  if(isLoading || categoryList === undefined){
-    return <CircularProgress />
-  }
-
-  const handleChange = (event: SelectChangeEvent<number>) => {
+  const handleChangeCategory = (event: SelectChangeEvent<number>) => {
     //setPassword(value);
-    if(typeof event.target.value === "number")
-      setCategorySelected(event.target.value)
-  }
+    if (typeof event.target.value === "string")
+      setCategorySelected(event.target.value);
+  };
+
+  const handleChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
+    //setPassword(value);
+    if (typeof event.target.value === "string")
+      setTitleSelected(event.target.value);
+  };
+
+  const handleChangeDescription = (event: ChangeEvent<HTMLInputElement>) => {
+    //setPassword(value);
+    if (typeof event.target.value === "string")
+      setDescriptionSelected(event.target.value);
+  };
 
   const updateQuestion = (index: number, question: quizQuestionInterface) => {
-    if(!questionList) return;
+    if (!questionList) return;
 
     questionList[index] = question;
 
     setQuestionList([...questionList]);
-  }
+  };
 
-  const saveQuiz = (event: FormEvent<EventTarget>) => {
+  const saveQuiz = async (event: FormEvent<EventTarget>) => {
     event.preventDefault();
-    console.log(questionList);
-  }
 
-  return(
-    <div>
+    const question = {
+      category_id: categorySelected,
+      created_at: getCurrentTimestamp(),
+      description: descriptionSelected,
+      title: titleSelected,
+    };
+
+    const res = await fetch(
+      "https://quiz-6dc78-default-rtdb.europe-west1.firebasedatabase.app/quiz.json",
+      {
+        method: "POST",
+        body: JSON.stringify(question),
+      }
+    );
+    const resJson = await res.json();
+
+    let tempQuestionList: Array<quizQuestionInterface> = [...questionList];
+
+    tempQuestionList.forEach(async (question) => {
+      question.quiz_id = resJson?.name ?? "";
+      await fetch(
+        "https://quiz-6dc78-default-rtdb.europe-west1.firebasedatabase.app/question.json",
+        {
+          method: "POST",
+          body: JSON.stringify(question),
+        }
+      );
+    });
+
+    navigate("/");
+  };
+
+  return (
+    <ContentCard headerText={"New question"}>
       <form
-        style={{maxWidth: "35rem", marginInline: "auto"}}
+        style={{ maxWidth: "35rem", marginInline: "auto" }}
         onSubmit={saveQuiz}
       >
         <TextField
           required
-          // error={userNameError}
           id="login-input"
           label="Quiz name"
           variant="standard"
           margin="normal"
-          // onChange={updateInsertedUserName}
+          onChange={handleChangeTitle}
         />
         <FormControl fullWidth variant="standard" required>
           <InputLabel id="quiz-category-select-label">Quiz category</InputLabel>
           <Select
             labelId="quiz-category-select-label"
             id="quiz-category-select"
-            defaultValue={categorySelected}
-            value={categorySelected}
+            defaultValue={categorySelected ?? categoryList[0].categoryId}
+            value={categorySelected ?? categoryList[0].categoryId}
             label="Quiz category"
-            onChange={handleChange}
+            onChange={handleChangeCategory}
           >
-            {categoryList?.map((category: categoryListInterface) =>
-                (<MenuItem value={category.categoryId} selected={categorySelected === category.categoryId}>{category.categoryName}</MenuItem>)
-              )
-            }
+            {categoryList?.map((category: categoryListInterface) => (
+              <MenuItem
+                value={category.categoryId}
+                selected={categorySelected == category.categoryId}
+              >
+                {category.categoryName}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <TextField
@@ -129,46 +194,58 @@ export default function QuizCreate(){
           label="Quiz description"
           variant="standard"
           margin="normal"
-          // onChange={updateInsertedUserName}
+          onChange={handleChangeDescription}
         />
 
         <>
-        {
-          questionList ? questionList.map((question: quizQuestionInterface, index) => {
-            return (<QuizQuestion
-              quizQuestion={question}
-              questionIndex={index}
-              updateQuestion={updateQuestion}
-            />)
-          }) : ''
-        }
+          {questionList
+            ? questionList.map((question: quizQuestionInterface, index) => {
+                return (
+                  <QuizQuestion
+                    quizQuestion={question}
+                    questionIndex={index}
+                    updateQuestion={updateQuestion}
+                  />
+                );
+              })
+            : ""}
         </>
 
-        <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-          <Fab color="primary" aria-label="add" style={{float: 'left', marginBottom: "2rem"}} variant="extended" onClick={() => {
-
-            setQuestionList(questionList ? [...questionList, getNewQuestion()] : [getNewQuestion()]);
-          }}>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Fab
+            color="primary"
+            aria-label="add"
+            style={{ float: "left", marginBottom: "2rem" }}
+            variant="extended"
+            onClick={() => {
+              setQuestionList(
+                questionList
+                  ? [...questionList, getNewQuestion()]
+                  : [getNewQuestion()]
+              );
+            }}
+          >
             <AddIcon />
             Add question
           </Fab>
         </div>
 
-        <span style={{
-          color: 'red'
-        }}
+        <span
+          style={{
+            color: "red",
+          }}
         >
-            {/*{loginMessage}*/}
-          </span>
+          {/*{loginMessage}*/}
+        </span>
         <Button
           variant="contained"
           color="primary"
-          sx={{ maxWidth: "50%", marginBottom: "2rem"}}
+          sx={{ maxWidth: "50%", marginBottom: "2rem" }}
           type="submit"
         >
           Add quiz
         </Button>
       </form>
-    </div>
-  )
+    </ContentCard>
+  );
 }

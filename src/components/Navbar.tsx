@@ -53,19 +53,19 @@ export default function Navbar(){
       <AppBar position="static" style={{backgroundColor: '#303035'}}>
         <Toolbar>
           <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
-            <a
-              href={'/'}
+            <NavLink
+              to={'/'}
               style={{
                 color: 'inherit',
                 textDecoration: 'inherit'
               }}
             >
               QUIZ
-            </a>
+            </NavLink>
           </Typography>
           <div className={'actions'} style={{position: 'absolute', right: '1rem'}}>
             {/*<Button color="inherit" onClick={printToken}>Get Token</Button>*/}
-            { getLogin() === '' ?
+            { getLogin() !== '' ?
               <a href="/login"
                  style={{
                    color: 'inherit',
@@ -80,8 +80,8 @@ export default function Navbar(){
                   alignItems: "center",
                 }}
               >
-                {user?.is_super_user ?
-                  <a href={'/quiz/create'}
+                {!user?.is_super_user ?
+                  <NavLink to={'/quiz/create'}
                      style={{
                        color: 'inherit',
                        textDecoration: 'inherit'
@@ -98,7 +98,7 @@ export default function Navbar(){
                     >
                       DODAJ QUIZ
                     </Button>
-                  </a>: ''}
+                  </NavLink>: ''}
                 Hello {user?.user_name}
                 <Button
                   style={{

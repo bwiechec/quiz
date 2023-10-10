@@ -1,13 +1,21 @@
-import {useParams} from "react-router";
-import React, {ChangeEvent, useEffect, useState} from "react";
-import {categoryListInterface, quizAnswerInterface} from "../../interfaces/interfaces";
-import {Checkbox, FormControlLabel, FormGroup, TextField} from "@mui/material";
+import { useParams } from "react-router";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import {
+  categoryListInterface,
+  quizAnswerInterface,
+} from "../../interfaces/interfaces";
+import {
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  TextField,
+} from "@mui/material";
 
 interface quizAnswerProps {
-  answer: quizAnswerInterface
-  index: number
-  updateAnswerText: (index: number, text: string) => void
-  updateAnswerCorrect: (index: number, isCorrect: boolean) => void
+  answer: quizAnswerInterface;
+  index: number;
+  updateAnswerText: (index: number, text: string) => void;
+  updateAnswerCorrect: (index: number, is_correct: boolean) => void;
 }
 
 export default function QuizAnswer({
@@ -15,24 +23,22 @@ export default function QuizAnswer({
   index,
   updateAnswerText,
   updateAnswerCorrect,
-
-}:quizAnswerProps){
-
+}: quizAnswerProps) {
   const callUpdateAnswerText = (event: ChangeEvent<HTMLInputElement>) => {
     //setUserName();
-    updateAnswerText(index, event.target.value)
-  }
+    updateAnswerText(index, event.target.value);
+  };
 
   const callUpdateAnswerCorrect = (event: ChangeEvent<HTMLInputElement>) => {
     //setUserName();
-    updateAnswerCorrect(index, event.target.checked)
-  }
+    updateAnswerCorrect(index, event.target.checked);
+  };
 
-  return(
+  return (
     <FormGroup
       style={{
         display: "flex",
-        alignItems: "center"
+        alignItems: "center",
       }}
     >
       {/*test{answer.toString()}*/}
@@ -40,7 +46,7 @@ export default function QuizAnswer({
         required
         // error={userNameError}
         id="description-input"
-        label={`Answer ${index+1}`}
+        label={`Answer ${index + 1}`}
         variant="standard"
         margin="normal"
         onChange={callUpdateAnswerText}
@@ -48,12 +54,12 @@ export default function QuizAnswer({
       <FormControlLabel
         control={
           <Checkbox
-            checked={answer.isCorrect}
+            checked={answer.is_correct}
             onChange={callUpdateAnswerCorrect}
           />
         }
         label="Correct answer"
       />
     </FormGroup>
-  )
+  );
 }

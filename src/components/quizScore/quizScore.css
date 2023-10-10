@@ -1,0 +1,29 @@
+.score {
+  width: 100%;
+}
+
+.score-info {
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.score button:hover {
+  background-color: rgba(100, 102, 245, 0.65);
+}
+
+.score-return {
+  float: right;
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .score-return {
+    margin: 0 1rem 0 0 !important;
+  }
+}
+
+@media (min-width: 720px) {
+  .score-return {
+    margin: 0 1rem 0;
+  }
+}

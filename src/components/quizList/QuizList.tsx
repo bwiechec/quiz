@@ -1,98 +1,88 @@
-import React, {useEffect, useState} from 'react';
-import {CircularProgress, Grid, Box, Typography} from '@mui/material/';
-import {Button, Skeleton} from "@mui/material";
-import {categoryListInterface, quizListInterface} from "../../interfaces/interfaces";
-import {getAccessToken} from "../../utils/token";
-import {useParams} from "react-router";
-import {NavLink} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Grid, Box, Typography } from "@mui/material/";
+import PageLoading from "../pageLoading/PageLoading";
+import { Button, Skeleton } from "@mui/material";
+import {
+  categoryListInterface,
+  quizListInterface,
+} from "../../interfaces/interfaces";
+import { getAccessToken } from "../../utils/token";
+import { useNavigate, useParams } from "react-router";
+import { NavLink } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { quizActions } from "../../store/slices/quiz";
+import ContentCard from "../contentCard/ContentCard";
+import LinkBox from "../linkBox/LinkBox";
+import EmptyEndpoint from "../emptyEndpoint/EmptyEndpoint";
 
 interface quizObject {
-  title: string,
-  description: string,
-  img?: string | null
+  title: string;
+  description: string;
+  img?: string | null;
 }
 
-export default function QuizList(){
+export default function QuizList() {
   let { categoryId } = useParams();
 
-  const [quizList, setQuizList] = useState<Array<quizListInterface>>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // const categoryList = useSelector(state => state.category.categoryList);
+  const quizList = useSelector((state) => state.quiz.quizList);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    fetch('https://quiz-6dc78-default-rtdb.europe-west1.firebasedatabase.app/category.json')
-      .then(res => res.json())
-      .then(resJson => {
+    fetch(
+      `https://quiz-6dc78-default-rtdb.europe-west1.firebasedatabase.app/quiz.json?orderBy="category_id"&equalTo="${categoryId}"`
+    )
+      .then((res) => res.json())
+      .then((resJson) => {
         setIsLoading(false);
-        setQuizList(resJson.response.quizList);
-        console.log(resJson);
-      });
-  }, [])
-
-  console.log('quizList')
-  console.log(quizList)
-
-  if(isLoading){
-    return <CircularProgress />
-  }
-  else if(quizList === undefined || quizList.length === 0){
-    return <div>
-      No quizzes found in this category!
-      <div>
-        <NavLink to={'/'}><Button>Return</Button></NavLink>
-      </div>
-    </div>
-  }
-
-  return(
-    <>
-      <Grid
-        item container
-        alignItems="center"
-        justifyContent="center"
-        xs={12}
-        direction={{xs: "row"}}
-        style={{border: "2px solid red"}}
-      >
-        {quizList?.map((quiz: quizListInterface) => (
-          <Box key={quiz.quizName}
-            onClick={() => console.log(quiz.quizName)}
-            alignItems="center"
-            justifyContent="center"
-            display="flex"
-            sx={{ width: {xs: "40rem", sm: "30rem", xl: "25rem"}, height: '10rem', margin: '2.5rem', my: 5, backgroundColor: '#9191e0', cursor: 'pointer'}}
-            border="1px solid #8e8ead"
-            borderRadius="1rem"
-            color="white"
-          >
-            {/*{quiz.img ?*/}
-            {/*  (<img*/}
-            {/*    style={{ width: "90%", height: "10%" }}*/}
-            {/*    alt={quiz.title}*/}
-            {/*    src={quiz.img}*/}
-            {/*  />)*/}
-            {/*  :*/}
-            {/*  (<Skeleton variant="rectangular" style={{marginInline: "auto"}} sx={{width: {xs: "90%", md: "90%", xl: '65%'}}} height={"10vh"} />)*/}
-            {/*}*/}
-            {quiz ?
-              (<Box sx={{pr: 2}}>
-                  <Typography gutterBottom variant="body2">
-                    {quiz.quizName}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {quiz.quizDescription}<br />
-                    Creator: {quiz.userName}
-                  </Typography>
-                </Box>)
-              :
-              (<Skeleton/>)
-            }
-          </Box>)
-        )
+        let quizzes = [];
+        for (const key in resJson) {
+          quizzes.push({
+            quizId: key,
+            quizName: resJson[key].title,
+            userName: resJson[key].created_at,
+            quizDescription: resJson[key].description,
+          });
         }
-      </Grid>
-      <div>
-        <NavLink to={'/'}><Button>Return</Button></NavLink>
-      </div>
-    </>
-  )
+        dispatch(
+          quizActions.setQuizzes({
+            // TODO do przemyslenia czy jest sens ladowac do reduxa
+            quizzes,
+          })
+        );
+      });
+  }, []);
+
+  if (isLoading) {
+    return <PageLoading />;
+  } else if (quizList === undefined || quizList.length === 0) {
+    return <EmptyEndpoint />;
+  }
+
+  return (
+    <ContentCard
+      headerText={"Questions"}
+      linkTo={"/"}
+      linkText={"Return to category list"}
+    >
+      {quizList?.map(
+        (quiz: quizListInterface) =>
+          quiz.quizName &&
+          quiz.quizId && (
+            <LinkBox id={quiz.quizId} name={quiz.quizName} linkTo={"quiz"}>
+              <Box sx={{ pr: 2 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {quiz.quizDescription}
+                  <br />
+                  {/*Creator: {quiz.userName}*/}
+                </Typography>
+              </Box>
+            </LinkBox>
+          )
+      )}
+    </ContentCard>
+  );
 }
