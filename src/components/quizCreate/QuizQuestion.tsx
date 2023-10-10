@@ -1,7 +1,5 @@
-import { useParams } from "react-router";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent } from "react";
 import {
-  categoryListInterface,
   quizAnswerInterface,
   quizQuestionInterface,
 } from "../../interfaces/interfaces";

@@ -1,6 +1,5 @@
 import {
   Button,
-  FormGroup,
   TextField,
   MenuItem,
   InputLabel,
@@ -10,25 +9,16 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import PageLoading from "../pageLoading/PageLoading";
-import React, {
-  ChangeEvent,
-  FormEvent,
-  FormEventHandler,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import {
   categoryListInterface,
   quizAnswerInterface,
   quizQuestionInterface,
 } from "../../interfaces/interfaces";
-import { getAccessToken } from "../../utils/token";
-import QuizAnswer from "./QuizAnswer";
 import QuizQuestion from "./QuizQuestion";
 import { useSelector } from "react-redux";
 import ContentCard from "../contentCard/ContentCard";
-import { json, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 export default function QuizCreate() {
   const categoryList = useSelector((state) => state.category.categoryList);

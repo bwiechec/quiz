@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import PageLoading from "../pageLoading/PageLoading";
 import ContentCard from "../contentCard/ContentCard";
 import QuestionCard from "../questionCard/QuestionCard";

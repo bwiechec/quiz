@@ -1,9 +1,5 @@
-import { useParams } from "react-router";
-import React, { ChangeEvent, useEffect, useState } from "react";
-import {
-  categoryListInterface,
-  quizAnswerInterface,
-} from "../../interfaces/interfaces";
+import { ChangeEvent } from "react";
+import { quizAnswerInterface } from "../../interfaces/interfaces";
 import {
   Checkbox,
   FormControlLabel,

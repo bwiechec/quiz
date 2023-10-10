@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Grid, Skeleton, Box, Button } from "@mui/material/";
+import { useEffect, useState } from "react";
 import PageLoading from "../pageLoading/PageLoading";
 import { categoryListInterface } from "../../interfaces/interfaces";
 import { categoryActions } from "../../store/slices/category";
