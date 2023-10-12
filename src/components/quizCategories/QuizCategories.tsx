@@ -18,7 +18,8 @@ export default function QuizCategories() {
   console.log("Control log");
   useEffect(() => {
     setIsError(false);
-    if (!categoryList)
+    console.log(categoryList);
+    if (!categoryList || !categoryList.length)
       fetch(
         "https://quiz-6dc78-default-rtdb.europe-west1.firebasedatabase.app/category.json"
       )
