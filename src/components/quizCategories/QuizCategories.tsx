@@ -5,13 +5,16 @@ import { categoryActions } from "../../store/slices/category";
 import { useSelector, useDispatch } from "react-redux";
 import ContentCard from "../contentCard/ContentCard";
 import LinkBox from "../linkBox/LinkBox";
+import { RootState } from "../../store";
 
 export default function QuizCategories() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  const categoryList = useSelector((state) => state.category.categoryList);
+  const categoryList = useSelector(
+    (state: RootState) => state.category.categoryList
+  );
 
   useEffect(() => {
     setIsError(false);
@@ -51,13 +54,16 @@ export default function QuizCategories() {
 
   return (
     <ContentCard headerText={"Categories"} linkTo={""} linkText={""}>
-      {categoryList?.map((category: categoryListInterface) => (
-        <LinkBox
-          id={category.categoryId}
-          name={category.categoryName}
-          linkTo={"category"}
-        />
-      ))}
+      {categoryList?.map(
+        (category: categoryListInterface | null) =>
+          category && (
+            <LinkBox
+              id={category.categoryId}
+              name={category.categoryName}
+              linkTo={"category"}
+            />
+          )
+      )}
     </ContentCard>
   );
 }
