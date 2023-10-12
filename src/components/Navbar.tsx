@@ -50,14 +50,11 @@ export default function Navbar() {
                     color: "inherit",
                     textDecoration: "inherit",
                   }}
-                  onClick={
-                    () => alert("DODAJE!") //TODO change to normal logout
-                  }
                 >
                   DODAJ QUIZ
                 </Button>
               </NavLink>
-              <Button
+              {/* <Button
                 style={{
                   color: "inherit",
                   textDecoration: "inherit",
@@ -67,7 +64,7 @@ export default function Navbar() {
                 }
               >
                 (Logout)
-              </Button>
+              </Button> */}
             </p>
           </div>
         </Toolbar>
