@@ -51,7 +51,7 @@ export default function Navbar() {
                     textDecoration: "inherit",
                   }}
                 >
-                  DODAJ QUIZ
+                  ADD QUIZ
                 </Button>
               </NavLink>
               {/* <Button
