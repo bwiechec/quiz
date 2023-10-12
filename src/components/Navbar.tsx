@@ -6,10 +6,10 @@ import Button from "@mui/material/Button";
 import { NavLink } from "react-router-dom";
 
 export default function Navbar() {
-  const clearLocalStorage = () => {
-    localStorage.clear();
-    window.location.reload();
-  };
+  // const clearLocalStorage = () => {
+  //   localStorage.clear();
+  //   window.location.reload();
+  // };
 
   return (
     <Box sx={{ flexGrow: 1, width: "100%" }}>
