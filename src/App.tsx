@@ -10,7 +10,7 @@ import QuizCategories from "./components/quizCategories/QuizCategories";
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
+      <BrowserRouter basename="/quiz">
         <Navbar />
         <Routes key={"Routes"}>
           <Route key={"main_route"} path="/" element={<QuizCategories />} />
