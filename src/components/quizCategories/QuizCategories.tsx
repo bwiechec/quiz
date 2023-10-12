@@ -15,7 +15,7 @@ export default function QuizCategories() {
   const categoryList = useSelector(
     (state: RootState) => state.category.categoryList
   );
-
+  console.log("Control log");
   useEffect(() => {
     setIsError(false);
     if (!categoryList)
