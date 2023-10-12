@@ -15,10 +15,9 @@ export default function QuizCategories() {
   const categoryList = useSelector(
     (state: RootState) => state.category.categoryList
   );
-  console.log("Control log");
+
   useEffect(() => {
     setIsError(false);
-    console.log(categoryList);
     if (!categoryList || !categoryList.length)
       fetch(
         "https://quiz-6dc78-default-rtdb.europe-west1.firebasedatabase.app/category.json"
