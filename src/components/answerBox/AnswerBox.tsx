@@ -5,7 +5,7 @@ interface IAnswerBox {
   text: string;
   number: number;
   selectedNumber: number;
-  handleChoseAnswer: (number) => void;
+  handleChoseAnswer: (arg0: number) => void;
 }
 
 export default function AnswerBox({

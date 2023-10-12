@@ -35,7 +35,7 @@ export default function QuizCategories() {
             })
           );
         })
-        .catch((e) => {
+        .catch((_e) => {
           setIsError(true);
         });
     else setIsLoading(false);
@@ -50,7 +50,7 @@ export default function QuizCategories() {
   }
 
   return (
-    <ContentCard headerText={"Categories"}>
+    <ContentCard headerText={"Categories"} linkTo={""} linkText={""}>
       {categoryList?.map((category: categoryListInterface) => (
         <LinkBox
           id={category.categoryId}

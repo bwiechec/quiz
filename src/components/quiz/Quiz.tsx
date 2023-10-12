@@ -6,11 +6,11 @@ import QuestionCard from "../questionCard/QuestionCard";
 import QuizScore from "../quizScore/QuizScore";
 
 export default function Quiz() {
-  const [questionList, setQuestionList] = useState([]);
+  const [questionList, setQuestionList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isFinished, setIsFinished] = useState<boolean>(false);
-  const [questionId, setQuestionId] = useState<number>(null);
-  const [selectedAnswers, setSelectedAnswers] = useState([]);
+  const [questionId, setQuestionId] = useState<number>(-1);
+  const [selectedAnswers, setSelectedAnswers] = useState<any[]>([]);
   const [quizScore, setQuizScore] = useState(0);
 
   const searchParams = useParams();
@@ -37,7 +37,7 @@ export default function Quiz() {
     } else proceedQuizFinish();
   };
 
-  const proceedChoseAnswer = (key, is_correct) => {
+  const proceedChoseAnswer = (key: any, is_correct: any) => {
     const tempAnswers = [...selectedAnswers];
     tempAnswers[questionId] = { key, is_correct };
     setSelectedAnswers(tempAnswers);
@@ -72,10 +72,10 @@ export default function Quiz() {
   if (isLoading) return <PageLoading />;
 
   return (
-    <ContentCard headerText={"Question"}>
+    <ContentCard headerText={"Question"} linkTo={""} linkText={""}>
       {!isFinished && (
         <QuestionCard
-          key={{ questionId }}
+          // key={{ questionId }}
           text={currentQuestion.text}
           answers={currentQuestion.answers}
           proceedSubmitQuestion={proceedSubmitQuestion}

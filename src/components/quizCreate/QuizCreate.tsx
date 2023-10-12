@@ -19,18 +19,20 @@ import QuizQuestion from "./QuizQuestion";
 import { useSelector } from "react-redux";
 import ContentCard from "../contentCard/ContentCard";
 import { useNavigate } from "react-router";
+import { RootState } from "../../store/index";
 
 export default function QuizCreate() {
-  const categoryList = useSelector((state) => state.category.categoryList);
+  const categoryList = useSelector(
+    (state: RootState) => state.category.categoryList
+  );
 
   const [questionList, setQuestionList] =
     useState<Array<quizQuestionInterface>>();
   const [categorySelected, setCategorySelected] = useState<string>(
-    categoryList[0].categoryId
+    categoryList[0]?.categoryId ?? ""
   );
   const [titleSelected, setTitleSelected] = useState<string>();
   const [descriptionSelected, setDescriptionSelected] = useState<string>();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const navigate = useNavigate();
 
@@ -127,7 +129,7 @@ export default function QuizCreate() {
     );
     const resJson = await res.json();
 
-    let tempQuestionList: Array<quizQuestionInterface> = [...questionList];
+    let tempQuestionList: Array<quizQuestionInterface> = [...questionList!];
 
     tempQuestionList.forEach(async (question) => {
       question.quiz_id = resJson?.name ?? "";
@@ -144,7 +146,7 @@ export default function QuizCreate() {
   };
 
   return (
-    <ContentCard headerText={"New question"}>
+    <ContentCard headerText={"New question"} linkTo={""} linkText={""}>
       <form
         style={{ maxWidth: "35rem", marginInline: "auto" }}
         onSubmit={saveQuiz}
@@ -162,17 +164,17 @@ export default function QuizCreate() {
           <Select
             labelId="quiz-category-select-label"
             id="quiz-category-select"
-            defaultValue={categorySelected ?? categoryList[0].categoryId}
-            value={categorySelected ?? categoryList[0].categoryId}
+            // defaultValue={categorySelected ?? categoryList[0].categoryId}
+            // value={categorySelected ?? categoryList[0].categoryId}
             label="Quiz category"
             onChange={handleChangeCategory}
           >
-            {categoryList?.map((category: categoryListInterface) => (
+            {categoryList?.map((category: categoryListInterface | null) => (
               <MenuItem
-                value={category.categoryId}
-                selected={categorySelected == category.categoryId}
+                value={category?.categoryId}
+                selected={categorySelected == category?.categoryId}
               >
-                {category.categoryName}
+                {category?.categoryName}
               </MenuItem>
             ))}
           </Select>

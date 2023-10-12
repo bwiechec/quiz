@@ -13,7 +13,7 @@ interface IQuestionCard {
   proceedSubmitQuestion: () => void;
   questionCount: number;
   questionId: number;
-  proceedChoseAnswer: (number, boolean) => void;
+  proceedChoseAnswer: (arg0: number, arg1: boolean) => void;
   selectedAnswer: number;
 }
 
@@ -28,13 +28,10 @@ export default function QuestionCard({
 }: IQuestionCard) {
   console.log(selectedAnswer);
 
-  const handleChoseAnswer = (key) => {
+  const handleChoseAnswer = (key: number) => {
     console.log(key);
-    if (selectedAnswer !== key) {
+    if (selectedAnswer !== key)
       proceedChoseAnswer(key, answers[key]?.is_correct);
-    } else {
-      proceedChoseAnswer(null, null);
-    }
   };
 
   return (

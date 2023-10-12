@@ -11,7 +11,7 @@ export interface userInterface {
 }
 
 export interface categoryListInterface {
-  categoryId: number;
+  categoryId: string;
   categoryName: string;
 }
 

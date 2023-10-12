@@ -7,4 +7,6 @@ const store = configureStore({
   reducer: { category, quiz },
 });
 
+export type RootState = ReturnType<typeof store.getState>;
+
 export default store;

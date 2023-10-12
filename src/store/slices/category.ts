@@ -1,19 +1,26 @@
-import {createSlice} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import { categoryListInterface } from "../../interfaces/interfaces";
 
-const initialCategoryState = {categoryList: null};
+interface ICategoryList {
+  categoryList: Array<categoryListInterface | null>;
+}
+
+const initialCategoryState: ICategoryList = {
+  categoryList: [],
+};
 
 const categorySlice = createSlice({
-  name: 'category',
+  name: "category",
   initialState: initialCategoryState,
   reducers: {
-    addCategory(state, action){
+    addCategory(state, action) {
       state.categoryList = [...state.categoryList, action.payload.category];
     },
-    setCategories(state, action){
+    setCategories(state, action) {
       state.categoryList = action.payload.categories;
-    }
-  }
-})
+    },
+  },
+});
 export const categoryActions = categorySlice.actions;
 
 export default categorySlice.reducer;
